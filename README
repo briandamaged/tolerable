@@ -1,0 +1,32 @@
+============================================================================
+===                               Tolerable                              ===
+============================================================================
+
+VBScript is a terrible language.
+This extension makes it tolerable.
+
+
+
+
+Quick Start
+====================
+
+Installation:
+1. Copy this project onto your local machine.
+2. Add the project's   \bin   folder to your PATH environment variable.
+   If you are installing Tolerable just for local use, then your PATH
+   will look something like this:
+
+      C:\tolerable\bin;%PATH%
+
+
+
+Running Tolerable:
+1. Open a command prompt.
+2. Execute your VBScripts using the (new)   t    command.  For example:
+
+
+   C:\tolerable\examples\basic\closures> t using_store.vbs
+
+
+
