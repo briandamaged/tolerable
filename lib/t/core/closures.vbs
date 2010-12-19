@@ -225,21 +225,24 @@ Class ClosureFactory_Class
         ClassCode = _
             "Class " & ClassName(arg_count) & vbCR &_
             "    Private m_reserved_name" & vbCR &_
-            "    Private m_stored" & vbCR &_
             "    Private m_func" & vbCR &_
-            "    Public Sub Initialize(ByVal reserved_name, ByVal storage, ByVal func)" & vbCR &_
+            "    Public  Stored" & vbCR &_
+            "    Public Sub Initialize(ByVal reserved_name, ByVal func)" & vbCR &_
             "        Set m_reserved_name = reserved_name" & vbCR &_
-            "        Assign m_stored, storage" & vbCR &_
             "        Set m_func          = func" & vbCR &_
             "    End Sub" & vbCR &_
             "    Private Sub Class_Terminate()" & vbCR &_
             "        Set m_func          = Nothing" & vbCR &_
-            "        Set m_stored        = Nothing" & vbCR &_
             "        Set m_reserved_name = Nothing" & vbCR &_
+            "        Set Stored          = Nothing" & vbCR &_
             "    End Sub" & vbCR &_
+            "    Public Function Store(ByVal data)" & vbCR &_
+            "        Assign Stored, data" & vbCR &_
+            "        Set Store = Me" & vbCR &_
+            "    End Function" & vbCR &_
             "    Public Default Function Invoke(" & ByRefArgs(arg_count) & ")" & vbCR &_
             "        Dim retval" & vbCR &_
-            "        m_func retval, m_stored" & invoke_args & vbCR &_
+            "        m_func retval, Stored" & invoke_args & vbCR &_
             "        If IsObject(retval) Then" & vbCR &_
             "            Set Invoke = retval" & vbCR &_
             "        Else" & vbCR &_
@@ -256,10 +259,10 @@ Class ClosureFactory_Class
 
 
 
-    Public Function Create(ByVal arg_count, ByVal storage, ByVal statements)
+    Public Function Create(ByVal arg_count, ByVal statements)
         If Not m_constructors.Exists(arg_count) Then
             GenerateClass arg_count
-            m_constructors.Add arg_count, Lambda(0, Nothing, "Set Invoke = New " & ClassName(arg_count))
+            m_constructors.Add arg_count, Lambda(0, "Set Invoke = New " & ClassName(arg_count))
         End If
 
         Dim r : Set r = m_name_generator.GetName
@@ -273,7 +276,7 @@ Class ClosureFactory_Class
         ' Create the Closure object that will point to this function
         Dim c      : Set c = m_constructors(arg_count)
         Dim retval : Set retval = c()
-        retval.Initialize r, storage, GetRef(r.Name)
+        retval.Initialize r, GetRef(r.Name)
 
         Set Create = retval
     End Function
@@ -290,31 +293,40 @@ Public Function ClosureFactory()
 End Function
 
 
-Public Function Lambda(ByVal arg_count, ByVal storage, ByVal statements)
-    Set Lambda = ClosureFactory.Create(arg_count, storage, statements)
+Public Function Lambda(ByVal arg_count, ByVal statements)
+    Set Lambda = ClosureFactory.Create(arg_count, statements)
 End Function
 
 
 
-' If obj is a String, then convert it into a Lambda
-' with arg_count arguments.  Otherwise, return obj
-Public Function TO_Expr(ByVal arg_count, ByVal obj)
-    If TypeName(obj) = "String" Then
-        Set TO_Expr = Lambda(arg_count, Array(), "Assign Invoke, (" & obj & ")")
+' If f is a String, then convert it into a Lambda
+' with arg_count arguments.  Otherwise, return f.
+Public Function TO_Func(ByVal arg_count, ByVal f)
+    If TypeName(f) = "String" Then
+        Set TO_Func = Lambda(arg_count, f)
     Else
-        Set TO_Expr = obj
+        Set TO_Func = f
     End If
 End Function
 
-' If obj is a String, then convert it into a Lambda
-' with arg_count arguments.  Otherwise, return obj
-Public Function TO_Sub(ByVal arg_count, ByVal obj)
-    If TypeName(obj) = "String" Then
-        Set TO_Sub = Lambda(arg_count, Array(), obj)
+
+' This is basically the same as TO_Func, except it interprets
+' Strings as inline expressions that return a value.  So, the
+' following are equivalent:
+'
+' TO_Func(1, "Invoke = arg0 * 2")
+' TO_Expr(1, "arg0 * 2")
+'
+' In short, it just saves you typing and makes the code a little
+' more readible.
+Public Function TO_Expr(ByVal arg_count, ByVal f)
+    If TypeName(f) = "String" Then
+        Set TO_Expr = Lambda(arg_count, "Assign Invoke, " & f)
     Else
-        Set TO_Sub = obj
+        Set TO_Expr = f
     End If
 End Function
+
 
 
 
@@ -325,15 +337,5 @@ End Function
 Public Function Q(ByVal input)
     Q = Replace(input, "'", """")
 End Function
-
-
-' Lambda function that will invert the output of any conditional
-Public Function L_Not(ByVal arg_count, ByVal func)
-    Set L_Not = Lambda(arg_count, _
-                       Array(TO_Expr(arg_count, func)), _
-                       "Assign Invoke, Not(stored(0)(" & ClosureFactory.GetArgList(arg_count).Args & "))")
-End Function
-
-
 
 

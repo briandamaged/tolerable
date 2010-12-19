@@ -95,7 +95,10 @@ Class Enumerator_Class
     End Function
     
     Public Function Discard(ByVal cond)
-        Set Discard = Me.Retain(L_Not(1, cond))
+        Dim retval
+        Set retval = New Enumerator_Source_Discard_Class
+        retval.Initialize cond, Me
+        Set Discard = Enumerator(retval)
     End Function
     
     
@@ -130,7 +133,7 @@ Class Enumerator_Class
     ' This is the same as DoUntil
     Public Function StopBefore(ByVal cond)
         Dim retval
-        Set retval = New Enumerator_Source_StopBefore_Class
+        Set retval = New Enumerator_Source_Stop_Class
         retval.Initialize cond, True, Me
         Set StopBefore = Enumerator(retval)
     End Function
@@ -141,7 +144,7 @@ Class Enumerator_Class
     ' condition True.
     Public Function StopWhen(ByVal cond)
         Dim retval
-        Set retval = New Enumerator_Source_StopWhen_Class
+        Set retval = New Enumerator_Source_Stop_Class
         retval.Initialize cond, False, Me
         Set StopWhen = Enumerator(retval)
     End Function
@@ -170,7 +173,7 @@ Class Enumerator_Class
     End Function
     
     Public Sub DoEach(ByVal func)
-        Set func = TO_Sub(1, func)
+        Set func = TO_Func(1, func)
         While Me.HasNext
             func Me.Pop
         Wend
@@ -191,6 +194,14 @@ Class Enumerator_Class
     
     Public Function Cons()
         Set Cons = eCons(Me)
+    End Function
+    
+    
+    Public Function Limit(ByVal number)
+        Dim retval
+        Set retval = New Enumerator_Source_Limit_Class
+        retval.Initialize Me, number
+        Set Limit = Enumerator(retval)
     End Function
     
     
@@ -286,6 +297,40 @@ End Class
 
 
 
+Class Enumerator_Source_Discard_Class
+    Private m_cond
+    Private m_en
+    
+    Public Sub Initialize(ByVal cond, ByVal enumr)
+        Set m_cond  = TO_Expr(1, cond)
+        Set m_en    = enumr
+    End Sub
+    
+    Private Sub Class_Terminate()
+        Set m_cond    = Nothing
+        Set m_en = Nothing
+    End Sub
+    
+    Public Sub GetNext(ByRef retval, ByRef successful)
+        Do While m_en.HasNext
+            If Not m_cond(m_en.Peek) Then
+                Assign retval, m_en.Pop
+                successful = True
+                Exit Sub
+            Else
+                m_en.Pop
+            End If
+        Loop
+        successful = False
+    End Sub
+End Class
+
+
+
+
+
+
+
 Class Enumerator_Source_StartWhen_Class
     Private m_cond
     Private m_started
@@ -312,14 +357,14 @@ Class Enumerator_Source_StartWhen_Class
                 successful = False
             End If
         Else
-            While m_en.HasNext
+            Do While m_en.HasNext
                 Assign retval, m_en.Pop
                 If m_cond(retval) Then
                     successful = True
                     m_started  = True
                     Exit Sub
                 End If
-            Wend
+            Loop
             successful = False
         End If
     End Sub
@@ -378,7 +423,7 @@ End Class
 
 
 
-Class Enumerator_Source_StopBefore_Class
+Class Enumerator_Source_Stop_Class
     Private m_cond
     Private m_stopped
     Private m_en
@@ -637,9 +682,9 @@ End Function
 
 Public Function eRange3(ByVal start, ByVal finish, ByVal stepsize)
     If stepsize >= 0 Then
-        Set eRange3 = eCounter2(start, stepsize).DoWhile(Lambda(1, finish, "Invoke = (arg0 <= stored)"))
+        Set eRange3 = eCounter2(start, stepsize).DoWhile(Lambda(1, "Invoke = (arg0 <= stored)").Store(finish))
     Else
-        Set eRange3 = eCounter2(start, stepsize).DoWhile(Lambda(1, finish, "Invoke = (arg0 >= stored)"))
+        Set eRange3 = eCounter2(start, stepsize).DoWhile(Lambda(1, "Invoke = (arg0 >= stored)").Store(finish))
     End If
 End Function
 
@@ -705,6 +750,37 @@ Class Enumerator_Source_WithIndex_Class
     End Sub
 End Class
 
+
+Class Enumerator_Source_Limit_Class
+    Private m_en
+    Private m_limit
+    Private m_i
+    
+    Public Sub Initialize(ByVal enumr, ByVal lim)
+        Set m_en  = enumr
+        m_limit   = lim
+        m_i       = 0
+    End Sub
+    
+    Private Sub Class_Terminate()
+        Set m_en = Nothing
+    End Sub
+    
+    Public Sub GetNext(ByRef retval, ByRef successful)
+        If m_i < m_limit Then
+            If m_en.HasNext Then
+                Assign retval, m_en.Pop
+                successful = True
+                m_i        = m_i + 1
+            Else
+                successful = False
+            End If
+        Else
+            successful = False
+        End If
+    End Sub
+    
+End Class
 
 
 

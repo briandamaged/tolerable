@@ -127,18 +127,8 @@ End Class
 Dim LibraryManager_Singleton__
 Public Function LibraryManager
     If IsEmpty(LibraryManager_Singleton__) Then
-        ' We will initialize the LibraryManager's Paths by reading
-        ' the environment variables.
-        Dim wsh   : Set wsh   = CreateObject("WScript.Shell")
-        
-        ' Compute the location of the core Tolerable libraries
-        Dim t_lib :     t_lib = wsh.ExpandEnvironmentStrings("%TOLERABLE_HOME%")
-        If Right(t_lib, 1) = "\" Then
-            t_lib = t_lib & "lib\"
-        Else
-            t_lib = t_lib & "\lib\"
-        End If
-        
+        Dim t_lib : t_lib = WScript.ScriptFullName
+        t_lib = LEFT(t_lib, LEN(t_lib) - 10) & "\lib\" 
         
         ' Instantiate the LibraryManager bootstrapper.
         Set LibraryManager_Singleton__ = New LibraryManager_Bootstrapper_Class
