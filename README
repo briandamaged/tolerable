@@ -21,12 +21,10 @@ Installation:
 
 
 
-Running Tolerable:
+Executing a VBScript using Tolerable:
 1. Open a command prompt.
 2. Execute your VBScripts using the (new)   t    command.  For example:
 
 
    C:\tolerable\examples\basic\closures> t using_store.vbs
-
-
 

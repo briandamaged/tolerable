@@ -128,7 +128,9 @@ Dim LibraryManager_Singleton__
 Public Function LibraryManager
     If IsEmpty(LibraryManager_Singleton__) Then
         Dim t_lib : t_lib = WScript.ScriptFullName
-        t_lib = LEFT(t_lib, LEN(t_lib) - 10) & "\lib\" 
+        
+        ' 9 is the number of characters in  "bin\t.vbs"
+        t_lib = LEFT(t_lib, LEN(t_lib) - 9) & "lib\" 
         
         ' Instantiate the LibraryManager bootstrapper.
         Set LibraryManager_Singleton__ = New LibraryManager_Bootstrapper_Class
