@@ -823,3 +823,59 @@ Public Function eCons(ByVal enumerators)
 End Function
 
 
+
+
+
+
+Class Enumerator_Source_Array_Class
+    Private m_ary
+    Private m_index
+    
+    Public Sub Initialize(ByVal ary)
+        m_ary   = ary
+        m_index = 0
+    End Sub
+    
+    Private Sub Class_Terminate()
+        Set m_ary = Nothing
+    End Sub
+    
+    Public Sub GetNext(ByRef retval, ByRef successful)
+        If m_index <= UBOUND(m_ary) Then
+            Assign retval, m_ary(m_index)
+            m_index    = m_index + 1
+            successful = True
+        Else
+            successful = False
+        End If
+    End Sub
+End Class
+
+Public Function Enumerator_Array(ByVal ary)
+    Dim retval : Set retval = New Enumerator_Source_Array_Class
+    retval.Initialize ary
+    Set Enumerator_Array = Enumerator(retval)
+End Function
+
+
+
+Dim Converter_Enumerator_Singleton__
+Public Function Converter_Enumerator()
+    If IsEmpty(Converter_Enumerator_Singleton__) Then
+        Require "t\core\dispatcher.vbs"
+        Require "t\core\functional.vbs"
+        
+        Set Converter_Enumerator_Singleton__ = Dispatcher(1)
+
+        Converter_Enumerator_Singleton__.Given(L_Type("Enumerator")).Dispatch("arg0")
+        Converter_Enumerator_Singleton__.Given(L_IsArray).Dispatch(GetRef("Enumerator_Array"))
+    End If
+    Set Converter_Enumerator = Converter_Enumerator_Singleton__
+End Function
+
+
+
+Public Function TO_En(ByVal arg)
+    Set TO_En = Converter_Enumerator()(arg)
+End Function
+

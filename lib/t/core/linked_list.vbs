@@ -251,3 +251,7 @@ End Class
 Public Function LinkedList
     Set LinkedList = New LinkedList_Class
 End Function
+
+
+Converter_Enumerator.Given(L_Type("LinkedList")).Dispatch("arg0.TO_En")
+
