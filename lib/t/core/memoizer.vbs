@@ -157,7 +157,9 @@ End Function
 
 
 
-
+' This constructor can be used for simple, non-recursive functions.
 Public Function Memoizer(ByVal arg_count, ByVal func)
     Set Memoizer = MemoizerFactory.Create(arg_count, func)
 End Function
+
+

@@ -22,9 +22,6 @@ Option Explicit
 Require "t\core\assignment.vbs"
 Require "t\core\linked_list.vbs"
 
-
-Require "t\core\memoizer.vbs"
-
 ' When a Closure goes out of scope, it will destroy
 ' its Closure_NameHandle instance.  This will cause
 ' the closure's name to be returned to a pool of
@@ -136,6 +133,10 @@ Class ClosureFactory_Class
     
     Public Function ArgName(ByVal index)
         ArgName = "arg" & index
+    End Function
+    
+    Public Function StoredName(ByVal index)
+        StoredName = "stored(" & index & ")"
     End Function
     
     

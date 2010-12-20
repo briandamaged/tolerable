@@ -219,7 +219,7 @@ Class Enumerator_Class
     ' This should be slightly faster than calling
     ' the normal TO_Array dispatcher function.
     Public Function TO_Array()
-        TO_Array = Me.TO_LinkedList.ToArray
+        TO_Array = Me.TO_LinkedList.TO_Array
     End Function
 
 End Class

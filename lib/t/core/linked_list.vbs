@@ -19,6 +19,7 @@ Option Explicit
 
 
 Require "t\core\assignment.vbs"
+Require "t\core\enumerator.vbs"
 
 Class LinkedList_Node_Class
     Public  m_prev
@@ -226,7 +227,7 @@ Class LinkedList_Class
     
     
     
-    Public Function ToArray()
+    Public Function TO_Array()
         Dim i, iter
         
         ReDim retval(Me.Count - 1)
@@ -236,9 +237,14 @@ Class LinkedList_Class
             retval(i) = iter.GetNext
             i = i + 1
         Wend
-        ToArray = retval
+        TO_Array = retval
     End Function
     
+    Public Function TO_En()
+        Set TO_En = Enumerator_Iterator(Iterator)
+    End Function
+
+
 End Class
 
 
