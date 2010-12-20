@@ -787,16 +787,17 @@ End Class
 
 Class Enumerator_Source_Cons_Class
     Private m_enums
+    Private m_current
     
     Public Sub Initialize(ByVal enums)
-        ' TODO: Eventually, this should accept any
-        '       Enumerable datatype.
-        Set m_enums = enums
+        Set m_enums   = TO_En(enums).Map("TO_En(arg0)")
+        Set m_current = Nothing
     End Sub
     
     
     Private Sub Class_Terminate()
-        Set m_enums = Nothing
+        Set m_enums   = Nothing
+        Set m_current = Nothing
     End Sub
     
     Public Sub GetNext(ByRef retval, ByRef successful)
@@ -867,7 +868,7 @@ Public Function Converter_Enumerator()
         
         Set Converter_Enumerator_Singleton__ = Dispatcher(1)
 
-        Converter_Enumerator_Singleton__.Given(L_Type("Enumerator")).Dispatch("arg0")
+        Converter_Enumerator_Singleton__.Given(L_Type("Enumerator_Class")).Dispatch("arg0")
         Converter_Enumerator_Singleton__.Given(L_IsArray).Dispatch(GetRef("Enumerator_Array"))
     End If
     Set Converter_Enumerator = Converter_Enumerator_Singleton__

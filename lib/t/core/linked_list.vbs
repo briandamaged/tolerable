@@ -253,5 +253,5 @@ Public Function LinkedList
 End Function
 
 
-Converter_Enumerator.Given(L_Type("LinkedList")).Dispatch("arg0.TO_En")
+Converter_Enumerator.Given(L_Type("LinkedList_Class")).Dispatch("arg0.TO_En")
 

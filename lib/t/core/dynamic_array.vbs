@@ -217,5 +217,5 @@ End Class
 
 
 
-Converter_Enumerator.Given(L_Type("DynamicArray")).Dispatch("arg0.TO_En")
+Converter_Enumerator.Given(L_Type("DynamicArray_Class")).Dispatch("arg0.TO_En")
 
