@@ -30,7 +30,7 @@ Require "t\core\assignment.vbs"
 Require "t\core\closures.vbs"
 
 Require "t\core\linked_list.vbs"
-
+Require "t\core\dynamic_array.vbs"
 
 
 Class Enumerator_Class
@@ -194,6 +194,14 @@ Class Enumerator_Class
     
     Public Function Cons()
         Set Cons = eCons(Me)
+    End Function
+    
+    
+    Public Function GroupsOf(ByVal n)
+        Dim retval
+        Set retval = New Enumerator_Source_GroupsOf_Class
+        retval.Initialize Me, n
+        Set GroupsOf = Enumerator(retval)
     End Function
     
     
@@ -595,10 +603,10 @@ End Class
 
 
 
-Public Function sEmpty()
+Public Function eEmpty()
     Dim retval
     Set retval = New Enumerator_Source_Empty_Class
-    Set sEmpty = Enumerator(retval)
+    Set eEmpty = Enumerator(retval)
 End Function
 
 
@@ -634,11 +642,11 @@ Class Enumerator_Source_Collection_Class
 	
 End Class
 
-Public Function Enumerator_Collection(ByVal c)
+Public Function En_Collection(ByVal c)
 	Dim retval
 	Set retval = New Enumerator_Source_Collection_Class
 	retval.Initialize c
-	Set Enumerator_Collection = Enumerator(retval)
+	Set En_Collection = Enumerator(retval)
 End Function
 
 
@@ -782,6 +790,40 @@ Class Enumerator_Source_Limit_Class
     
 End Class
 
+
+
+
+Class Enumerator_Source_GroupsOf_Class
+    Private m_enumr
+    Private m_n
+    
+    Public Sub Initialize(ByVal enumr, ByVal n)
+        ' TODO: Should throw an exception when n <= 0
+        m_n         = n
+        Set m_enumr = enumr
+    End Sub
+    
+    Private Sub Class_Terminate()
+        Set m_enumr = Nothing
+    End Sub
+    
+    Public Sub GetNext(ByRef retval, ByRef successful)
+        If m_enumr.HasNext Then
+            successful = True
+            Set retval = DynamicArray()
+            Do While retval.Count < m_n
+                retval.Push m_enumr.Pop
+                If m_enumr.IsEmpty Then
+                    Exit Do
+                End If
+            Loop
+            retval = retval.TO_Array
+        Else
+            successful = False
+        End If
+    End Sub
+    
+End Class
 
 
 

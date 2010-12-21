@@ -135,7 +135,7 @@ Class DynamicArray_Class
     End Function
     
     Public Function TO_En()
-        Set TO_En = Scanner_Iterator(Me.Iterator)
+        Set TO_En = En_Iterator(Me.Iterator)
     End Function
     
     Public Function TO_Array()

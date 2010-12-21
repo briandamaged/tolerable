@@ -68,10 +68,10 @@ Class Enumerator_Source_Iterator_Class
 End Class
 
 
-Public Function Enumerator_Iterator(ByVal iter)
+Public Function En_Iterator(ByVal iter)
     Dim retval
     Set retval = New Enumerator_Source_Iterator_Class
     retval.Initialize iter
-    Set Enumerator_Iterator = Scanner(retval)
+    Set En_Iterator = Enumerator(retval)
 End Function
 

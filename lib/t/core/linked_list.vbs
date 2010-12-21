@@ -241,7 +241,7 @@ Class LinkedList_Class
     End Function
     
     Public Function TO_En()
-        Set TO_En = Enumerator_Iterator(Iterator)
+        Set TO_En = En_Iterator(Iterator)
     End Function
 
 

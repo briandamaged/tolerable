@@ -101,7 +101,7 @@ Public Function DispatcherFactory_CreateDispatcherConstructor(ByVal arg_count)
         "    Public Function When(ByVal cond)" & vbCR &_
         "        Dim retval : Set retval = New Dispatcher_Rule_Class" & arg_count & vbCR &_
         "        retval.Initialize(cond)" & vbCR &_
-        "        m_rules.Push retval" & vbCR &_
+        "        m_rules.Unshift retval" & vbCR &_
         "        Set When = retval" & vbCR &_
         "    End Function" & vbCR &_
         "    Public Function Otherwise()" & vbCR &_
