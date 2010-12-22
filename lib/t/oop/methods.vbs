@@ -4,6 +4,8 @@ Require "t\core\memoizer.vbs"
 
 
 
+
+
 Class T_MethodLookup_Class
     Private m_self
     Private m_class
@@ -21,6 +23,36 @@ Class T_MethodLookup_Class
     End Sub
 
 End Class
+
+
+Class T_UnboundMethod_Retriever_Fixed_Class
+    Private m_unbound_method
+    
+    Public Sub Initialize(ByVal unbound_method)
+        Set m_unbound_method = unbound_method
+    End Sub
+    
+    Private Sub Class_Terminate()
+        Set m_unbound_method = Nothing
+    End Sub
+    
+    Public Default Function Invoke(ByVal self, ByVal name)
+        Set Invoke = m_unbound_method
+    End Function
+End Class
+
+Private Function T_UnboundMethod_Retriever_Fixed(ByVal unbound_method)
+    Dim retval : Set retval = New T_UnboundMethod_Retriever_Fixed_Class
+    retval.Initialize unbound_method
+    Set T_UnboundMethod_Retriever_Fixed = retval
+End Function
+
+
+
+
+
+
+
 
 
 
