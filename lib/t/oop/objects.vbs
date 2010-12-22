@@ -218,7 +218,6 @@ End Function
 
 
 
-
 Private Function T_Class_M_Init(ByVal self, ByVal superclass)
     self.Fields__.Add "__superclass", superclass
 End Function

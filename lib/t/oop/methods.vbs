@@ -114,6 +114,11 @@ Private Function T_Method_ClassFactory__(ByVal arg_count)
         "    Public Property Get Func" & vbCR &_
         "        Set Func = m_func" & vbCR &_
         "    End Property" & vbCR &_
+        "    Public Function Unbind()" & vbCR &_
+        "        Dim retval : Set retval = New T_UnboundMethod_Class" & arg_count & vbCR &_
+        "        retval.Initialize m_name, m_func" & vbCR &_
+        "        Set Unbind = retval" & vbCR &_
+        "    End Function" & vbCR &_
         "    Public Function X(" & ClosureFactory.ByRefArgs(arg_count) & ")" & vbCR &_
         "        Assign X, m_func(m_self" & invoke_args & ")" & vbCR &_
         "    End Function" & vbCR &_
